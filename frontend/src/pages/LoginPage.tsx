@@ -6,6 +6,7 @@ import PasswordField from "../components/PasswordField";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { useInitialSetup } from "../InitialSetupContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const { setNeedsInitialSetup, setOrganizationId } = useInitialSetup();
   const navigate = useNavigate();
+  const { loginWithRedirect, isLoading } = useAuth0();
 
   const handleLogin = async () => {
     setError("");
@@ -95,52 +97,21 @@ export default function LoginPage() {
             gap: 2.5,
           }}
         >
-          <Box>
-            <Typography sx={{ fontWeight: 600, fontSize: 18, mb: 1, color: '#171717' }}>
-              Business email
-            </Typography>
-            <InputField
-              label=""
-              placeholder="email@company.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              name="email"
-              autoComplete="email"
-            />
-          </Box>
-          <Box>
-            <Typography sx={{ fontWeight: 600, fontSize: 18, mb: 1, color: '#171717' }}>
-              Password
-            </Typography>
-            <PasswordField
-              label=""
-              placeholder="Enter your password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              name="password"
-              autoComplete="current-password"
-            />
-          </Box>
           <Button
-            variant="contained"
+            variant="outlined"
             fullWidth
             sx={{
-              background: '#0a84ff',
               borderRadius: 999,
               fontWeight: 600,
               fontSize: 20,
               height: 56,
               textTransform: 'none',
-              boxShadow: 'none',
-              ':hover': {
-                background: '#006be6',
-                boxShadow: 'none',
-              },
-              mt: 3,
+              mt: 2,
             }}
-            onClick={handleLogin}
+            onClick={() => loginWithRedirect()}
+            disabled={isLoading}
           >
-            Sign in
+            Iniciar sesión con Auth0
           </Button>
           {error && <Typography color="error">{error}</Typography>}
         </Box>

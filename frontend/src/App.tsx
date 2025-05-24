@@ -4,6 +4,7 @@ import { InitialSetupProvider, useInitialSetup } from "./InitialSetupContext";
 import LoginPage from "./pages/LoginPage";
 import OrganizationSetupPage from "./pages/OrganizationSetupPage";
 import ComingSoonPage from "./pages/ComingSoonPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppRoutes() {
   const { needsInitialSetup } = useInitialSetup();
@@ -11,8 +12,8 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/organization-setup" element={needsInitialSetup ? <OrganizationSetupPage /> : <Navigate to="/login" />} />
-      <Route path="/coming-soon" element={<ComingSoonPage />} />
+      <Route path="/organization-setup" element={needsInitialSetup ? <ProtectedRoute><OrganizationSetupPage /></ProtectedRoute> : <Navigate to="/login" />} />
+      <Route path="/coming-soon" element={<ProtectedRoute><ComingSoonPage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to={hasSession ? "/coming-soon" : "/login"} />} />
     </Routes>
   );
