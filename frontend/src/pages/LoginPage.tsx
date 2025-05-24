@@ -1,17 +1,18 @@
-"use client";
-
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import InputField from "../../components/InputField";
-import PasswordField from "../../components/PasswordField";
+import InputField from "../components/InputField";
+import PasswordField from "../components/PasswordField";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
+import { useInitialSetup } from "../InitialSetupContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [needsInitialSetup, setNeedsInitialSetup] = useState(false);
+  const { setNeedsInitialSetup } = useInitialSetup();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     setError("");
@@ -26,14 +27,18 @@ export default function LoginPage() {
         return;
       }
       const data = await response.json();
-      // Check if organization is missing required data
+      // Paso 1.2: Definir organización sin datos
+      // Una organización está 'sin datos' si falta nombre o dirección
       const org = data.organization;
-      if (!org || !org.name || !org.address) {
-        setNeedsInitialSetup(true);
+      const orgMissingData = !org || !org.name || !org.address;
+      if (orgMissingData) {
+        setNeedsInitialSetup(true); // Paso 1.3: Guardar flag en estado global
+        navigate("/organization-setup");
       } else {
         setNeedsInitialSetup(false);
+        // Redirigir a dashboard o página principal
+        // navigate("/dashboard");
       }
-      // TODO: Store user session, redirect, etc.
     } catch (err) {
       setError("Login failed");
     }
@@ -135,11 +140,6 @@ export default function LoginPage() {
             Sign in
           </Button>
           {error && <Typography color="error">{error}</Typography>}
-          {needsInitialSetup && (
-            <Typography color="warning.main">
-              Your organization needs initial setup.
-            </Typography>
-          )}
         </Box>
       </Box>
     </Box>
