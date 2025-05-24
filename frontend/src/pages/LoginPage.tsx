@@ -27,6 +27,8 @@ export default function LoginPage() {
         return;
       }
       const data = await response.json();
+      // Guardar sesión en localStorage
+      localStorage.setItem("session", JSON.stringify(data));
       // Paso 1.2: Definir organización sin datos
       // Una organización está 'sin datos' si falta nombre o dirección
       const org = data.organization;
@@ -38,8 +40,7 @@ export default function LoginPage() {
       } else {
         setNeedsInitialSetup(false);
         setOrganizationId(org?.id ?? null);
-        // Redirigir a dashboard o página principal
-        // navigate("/dashboard");
+        navigate("/coming-soon");
       }
     } catch (err) {
       setError("Login failed");
