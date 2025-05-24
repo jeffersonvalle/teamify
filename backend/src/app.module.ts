@@ -4,6 +4,7 @@ import { HealthController } from './health/health.controller';
 import { User } from './user/user.entity';
 import { Organization } from './organization/organization.entity';
 import { AuthModule } from './auth/auth.module';
+import { OrganizationModule } from './organization/organization.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     AuthModule,
+    OrganizationModule,
   ],
   controllers: [HealthController],
 })

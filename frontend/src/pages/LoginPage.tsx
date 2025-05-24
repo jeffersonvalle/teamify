@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setNeedsInitialSetup } = useInitialSetup();
+  const { setNeedsInitialSetup, setOrganizationId } = useInitialSetup();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -33,9 +33,11 @@ export default function LoginPage() {
       const orgMissingData = !org || !org.name || !org.address;
       if (orgMissingData) {
         setNeedsInitialSetup(true); // Paso 1.3: Guardar flag en estado global
+        setOrganizationId(org?.id ?? null);
         navigate("/organization-setup");
       } else {
         setNeedsInitialSetup(false);
+        setOrganizationId(org?.id ?? null);
         // Redirigir a dashboard o página principal
         // navigate("/dashboard");
       }

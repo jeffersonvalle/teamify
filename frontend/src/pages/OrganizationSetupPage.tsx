@@ -10,7 +10,7 @@ export default function OrganizationSetupPage() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
-  const { setNeedsInitialSetup } = useInitialSetup();
+  const { setNeedsInitialSetup, organizationId } = useInitialSetup();
   const navigate = useNavigate();
 
   const handleSave = async () => {
@@ -19,8 +19,20 @@ export default function OrganizationSetupPage() {
       setError("Todos los campos son obligatorios");
       return;
     }
+    if (!organizationId) {
+      setError("No se encontró la organización");
+      return;
+    }
     try {
-      // Simulación de guardado exitoso
+      const response = await fetch(`http://localhost:8000/organization/${organizationId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, address }),
+      });
+      if (!response.ok) {
+        setError("Error al guardar los datos");
+        return;
+      }
       setNeedsInitialSetup(false);
       navigate("/login");
     } catch (err) {
