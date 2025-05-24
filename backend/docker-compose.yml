@@ -16,7 +16,7 @@ services:
     networks:
       - app-network
     volumes:
-      - ./backend/src:/app/src
+      - ./:/app
 
   db:
     image: mysql:8.0
