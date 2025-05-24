@@ -10,6 +10,34 @@ import Button from "@mui/material/Button";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [needsInitialSetup, setNeedsInitialSetup] = useState(false);
+
+  const handleLogin = async () => {
+    setError("");
+    try {
+      const response = await fetch("http://localhost:8000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!response.ok) {
+        setError("Invalid credentials");
+        return;
+      }
+      const data = await response.json();
+      // Check if organization is missing required data
+      const org = data.organization;
+      if (!org || !org.name || !org.address) {
+        setNeedsInitialSetup(true);
+      } else {
+        setNeedsInitialSetup(false);
+      }
+      // TODO: Store user session, redirect, etc.
+    } catch (err) {
+      setError("Login failed");
+    }
+  };
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#fff' }}>
@@ -102,9 +130,16 @@ export default function LoginPage() {
               },
               mt: 3,
             }}
+            onClick={handleLogin}
           >
             Sign in
           </Button>
+          {error && <Typography color="error">{error}</Typography>}
+          {needsInitialSetup && (
+            <Typography color="warning.main">
+              Your organization needs initial setup.
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>
